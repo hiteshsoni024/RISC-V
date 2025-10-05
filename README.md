@@ -19,7 +19,7 @@ The processor utilizes a classic single-cycle datapath. Every instruction is ful
 5.  **Write-Back (WB)**
 
 ### Block Diagram
-![RISC-V Single-Cycle Datapath](Screenshot 2025-09-20 175433.png)
+![image alt](https://github.com/hiteshsoni024/RISC-V/blob/fdf40972a4153e5c0d466d5c476272824e99e211/Screenshot%202025-09-20%20175433.png)
 ---
 
 ## 3. Features
