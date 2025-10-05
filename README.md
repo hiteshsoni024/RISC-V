@@ -4,7 +4,7 @@
 
 This repository contains the Verilog source code for a 32-bit, single-cycle RISC-V processor. This project was developed for educational purposes to demonstrate the fundamental principles of computer architecture. The processor is designed from the ground up, component by component, and implements a significant subset of the RV32I base integer instruction set.
 
-The entire design is synthesizable and can be tested using standard Verilog simulators like Xilinx Vivado's XSim or Icarus Verilog.
+The entire design is synthesizable and can be tested using standard Verilog simulators like Xilinx Vivado's XSim.
 
 ---
 
@@ -19,7 +19,6 @@ The processor utilizes a classic single-cycle datapath. Every instruction is ful
 5.  **Write-Back (WB)**
 
 ### Datapath Block Diagram
-
 
 ---
 
@@ -51,7 +50,7 @@ The project follows a modular design, with each major hardware block implemented
 | `RB32x32.v` | The 32x32 Register File. |
 | `ALU32.v` | The 32-bit Arithmetic Logic Unit. |
 | `PC.v` | The Program Counter register. |
-| `PC_incrementor.v`| A simple adder to calculate `PC + 4`. |
+| `PC_incrementor.v`| A simple adder to calculate PC + 4. |
 | `mux2to1.v` | A generic 2-to-1 multiplexer. |
 
 ---
@@ -62,27 +61,32 @@ The project follows a modular design, with each major hardware block implemented
 -   Xilinx Vivado or another Verilog simulator.
 
 ### Test Program
-The `InstructionMemo.v` module is pre-loaded with a test program that calculates the sum of numbers from 5 down to 1 using a loop.
+The `InstructionMemo.v` module is pre-loaded with a comprehensive test program to verify data dependencies and branch logic.
 
 ```assembly
-# Program: Sum numbers from 5 down to 1 (5+4+3+2+1 = 15)
-# x11 = result (sum), x10 = counter (N)
-addi x11, x0, 0      # Result = 0
-addi x10, x0, 5      # N = 5
-LOOP:
-add  x11, x11, x10    # Result = Result + N
-addi x10, x10, -1    # N = N - 1
-bne  x10, x0, -8    # If N!=0, jump back 2 instructions to LOOP
-# End of Loop
-sw   x11, 12(x0)      # Store Result (15) at memory address 12
-lw   x12, 12(x0)      # Load it back into x12 for verification
+// Program: Data Dependency and Branch (Not Taken) Test
+// PC=0:
+addi x5, x0, 40      // x5 = 40
+// PC=4:
+sw   x5, 0(x0)       // Memory[0] = 40
+// PC=8:
+addi x6, x0, 12      // x6 = 12
+// PC=12:
+lw   x7, 0(x0)       // x7 = Memory[0] = 40
+// PC=16:
+sub  x8, x7, x6      // x8 = 40 - 12 = 28
+// PC=20:
+beq  x8, x0, 8       // Branch if x8==0. Condition is FALSE, so branch is NOT taken.
+// PC=24:
+add  x9, x8, x6      // This will execute. x9 = 28 + 12 = 40
+// PC=28:
+addi x10, x0, 999    // This will also execute. x10 = 999
 ```
 
 ### Simulation Output
-Running the `tb_loop_step_by_step.v` testbench produces the following console output, which verifies the correct step-by-step execution of the program.
+Running the `tb_data_dependency_test.v` testbench produces the following console output, which verifies the correct step-by-step execution of the program.
 
 ```
-# run 1000ns
 --- Data Dependency Test Start ---
 --- Reset Released. Executing Program... ---
 
@@ -111,7 +115,7 @@ Cycle 8 (PC=        32): addi x10, x0, 999
  > Value in x10 =        999
 
 --- Program Finished ---
-$finish called at time : 95 ns 
 ```
 
 ---
+
