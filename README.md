@@ -18,8 +18,8 @@ The processor utilizes a classic single-cycle datapath. Every instruction is ful
 4.  **Memory Access (MEM)**
 5.  **Write-Back (WB)**
 
-### Datapath Block Diagram
-
+### Block Diagram
+![RISC-V Single-Cycle Datapath](Screenshot 2025-09-20 175433.png)
 ---
 
 ## 3. Features
